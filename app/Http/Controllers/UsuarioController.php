@@ -88,7 +88,7 @@ class UsuarioController extends Controller
             'nombre' => 'required|string|max:255',
             'correo' => 'required|email|unique:usuarios,correo|max:255',
             'contrasena' => 'required|string|min:8',
-            'rol' => 'required|string|in:admin,empleado,cliente',
+            'rol' => 'required|string|in:administrador,empleado,cliente',
             'telefono' => 'nullable|string|max:15',
             'direccion' => 'nullable|string|max:500',
         ]);

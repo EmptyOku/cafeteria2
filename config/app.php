@@ -150,9 +150,11 @@ return [
     Illuminate\Session\SessionServiceProvider::class,
     Illuminate\Translation\TranslationServiceProvider::class,
     Illuminate\Validation\ValidationServiceProvider::class,
+    Illuminate\Auth\AuthServiceProvider::class,
     Illuminate\View\ViewServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
 
     /*
      * Package Service Providers...

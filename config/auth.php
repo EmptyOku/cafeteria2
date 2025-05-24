@@ -42,6 +42,12 @@ return [
         ],
     ],
 
+    'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -62,7 +68,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Usuario::class, // Cambiar a tu modelo personalizado
         ],
 
         // 'users' => [

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
     use HasFactory;
 
@@ -22,11 +24,19 @@ class Usuario extends Model
         'direccion'
     ];
 
-    /**
+     /**
      * Atributos que deben ser convertidos a tipo específico.
      */
     protected $casts = [
-        'correo_verificado_en' => 'datetime'
+        'correo_verificado_en' => 'datetime',
+    ];
+
+    /**
+     * Atributos ocultos para arrays.
+     */
+    protected $hidden = [
+        'contrasena',
+        'remember_token',
     ];
 
     /**
@@ -67,5 +77,10 @@ class Usuario extends Model
     public function gastos()
     {
         return $this->hasMany(Gasto::class);
+    }
+
+    public function getAuthPassword()
+    {
+    return $this->contrasena;
     }
 }
