@@ -7,6 +7,8 @@
     <title>Cafetería</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- layouts/app.blade.php o similar -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             min-height: 100vh;
@@ -238,7 +240,7 @@
 
             @can('ver items de pedido')
             <li class="nav-item">
-                <a href="#" class="nav-link  py-2 px-2 rounded">
+                <a href="{{ route('admin.item_pedidos.index') }}" class="nav-link  py-2 px-2 rounded {{ request()->is('admin/item_pedidos*') ? 'active' : '' }}">
                     <i class="bi bi-list-ul"></i> Ítems de pedido
                 </a>
             </li>
@@ -278,7 +280,7 @@
 
             @can('ver gastos')
             <li class="nav-item">
-                <a href="#" class="nav-link  py-2 px-2 rounded">
+                <a href="{{ route('admin.gastos.index') }}" class="nav-link  py-2 px-2 rounded {{ request()->is('admin/gastos*') ? 'active' : '' }}">
                     <i class="bi bi-cash-stack"></i> Gastos
                 </a>
             </li>
@@ -336,5 +338,8 @@
         }
     });
 </script>
+<!-- ...existing code... -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@stack('scripts')
 </body>
 </html>

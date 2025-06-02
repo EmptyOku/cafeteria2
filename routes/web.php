@@ -12,14 +12,18 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\RecetaController;
+use App\Http\Controllers\ItemPedidoController;
+use App\Http\Controllers\GastoController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/dashboard', function () {
+/*Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+*/
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -42,6 +46,8 @@ Route::middleware(['auth'])
          Route::resource('pedidos', PedidoController::class);
          Route::resource('reservas', ReservaController::class);
          Route::resource('recetas', RecetaController::class);
+         Route::resource('item_pedidos', ItemPedidoController::class);
+         Route::resource('gastos', GastoController::class);
          // … otras tablas
      });
 

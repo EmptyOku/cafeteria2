@@ -2,55 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use OpenApi\Annotations as OA;
 use App\Models\Gasto;
+use App\Models\Usuario;
 use App\Http\Requests\StoreGastoRequest;
 use App\Http\Requests\UpdateGastoRequest;
+use App\Models\Inventario;
 use Illuminate\Http\Request;
 
-
-/**
- * @OA\Tag(
- *     name="Gastos",
- *     description="Operaciones relacionadas con los gastos"
- * )
- */
-
-/**
- * @OA\Schema(
- *     schema="Gasto",
- *     type="object",
- *     required={"usuario_id", "monto", "categoria", "fecha"},
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="usuario_id", type="integer", example=1),
- *     @OA\Property(property="monto", type="number", format="float", example=150.75),
- *     @OA\Property(property="descripcion", type="string", example="Compra de insumos"),
- *     @OA\Property(property="categoria", type="string", example="Insumos"),
- *     @OA\Property(property="fecha", type="string", format="date", example="2025-05-06"),
- *     @OA\Property(property="comprobante", type="string", example="comprobante.pdf"),
- *     @OA\Property(property="relacion_inventario", type="integer", example=5),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time")
- * )
- */
 class GastoController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/gastos",
-     *     summary="Obtener lista de gastos",
-     *     tags={"Gastos"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista completa de gastos",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Gasto"))
-     *     )
-     * )
-     */
     public function index()
     {
-        $gastos = Gasto::all();
-        return response()->json($gastos, 200);
+        $gastos = Gasto::paginate(10);
+        return view('admin.gastos.index', compact('gastos'));
+    }
+
+    public function create()
+    {
+        $usuarios = Usuario::all();
+        $inventarios = Inventario::all();
+        return view('admin.gastos.create', compact('usuarios', 'inventarios'));
     }
 
     public function store(Request $request)
@@ -65,17 +36,23 @@ class GastoController extends Controller
             'relacion_inventario' => 'nullable|exists:inventario,id',
         ]);
 
-        $gasto = Gasto::create($request->all());
+        Gasto::create($request->all());
 
-        return response()->json($gasto, 201);
+        return redirect()->route('admin.gastos.index')
+            ->with('success', 'Gasto creado correctamente');
     }
-
 
     public function show(Gasto $gasto)
     {
-        return response()->json($gasto, 200);
+        return view('admin.gastos.show', compact('gasto'));
     }
 
+    public function edit(Gasto $gasto)
+    {
+        $usuarios = Usuario::all();
+        $inventarios = Inventario::all();
+        return view('admin.gastos.edit', compact('gasto', 'usuarios', 'inventarios'));
+    }
 
     public function update(Request $request, Gasto $gasto)
     {
@@ -86,19 +63,20 @@ class GastoController extends Controller
             'fecha' => 'required|date',
             'descripcion' => 'nullable|string|max:255',
             'comprobante' => 'nullable|string|max:255',
-            'relacion_inventario' => 'nullable|exists:inventarios,id',
+            'relacion_inventario' => 'nullable|exists:inventario,id',
         ]);
 
         $gasto->update($request->all());
 
-        return response()->json($gasto, 200);
+        return redirect()->route('admin.gastos.index')
+            ->with('success', 'Gasto actualizado correctamente');
     }
-
 
     public function destroy(Gasto $gasto)
     {
         $gasto->delete();
 
-        return response()->json(['message' => 'Gasto eliminado correctamente'], 204);
+        return redirect()->route('admin.gastos.index')
+            ->with('success', 'Gasto eliminado correctamente');
     }
 }

@@ -35,10 +35,10 @@
                             <td>{{ $usuario->direccion ?? '-' }}</td>
                             <td class="text-end">
                                 <a href="{{ route('admin.usuarios.show', $usuario) }}" class="btn btn-sm btn-info text-white">Ver</a>
-                                <a href="{{ route('admin.usuarios.edit', $usuario) }}" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="{{ route('admin.usuarios.edit', $usuario) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i>Editar</a>
                                 <form method="POST" action="{{ route('admin.usuarios.destroy', $usuario) }}" style="display:inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i>Eliminar</button>
                                 </form>
                             </td>
                         </tr>

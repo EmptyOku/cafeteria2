@@ -32,11 +32,11 @@
                     <td>{{ Str::limit($receta->instrucciones, 50) }}</td>
                     <td>
                         <a href="{{ route('admin.recetas.show', $receta) }}" class="btn btn-info btn-sm">Ver</a>
-                        <a href="{{ route('admin.recetas.edit', $receta) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ route('admin.recetas.edit', $receta) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i> Editar</a>
                         <form action="{{ route('recetas.destroy', $receta) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar esta receta?')">Eliminar</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar esta receta?')"><i class="bi bi-trash"></i> Eliminar</button>
                         </form>
                     </td>
                 </tr>

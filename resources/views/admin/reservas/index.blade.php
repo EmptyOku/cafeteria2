@@ -11,7 +11,7 @@
 {{-- Reservas de hoy próximas a vencer --}}
 @if($reservasHoy->count())
     <div class="mb-4">
-        <h4 class="text-muted">Próximas a vencer (Hoy)</h4>
+        <h4 class="mb-2">Próximas a vencer (Hoy)</h4>
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
@@ -105,7 +105,7 @@
 {{-- Reservas pasadas --}}
 @if($reservasPasadas->count())
     <div class="mb-4">
-        <h4 class="text-muted">Reservas Pasadas</h4>
+        <h4 class="mb-2">Reservas Pasadas</h4>
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
@@ -136,11 +136,11 @@
                         </td>
                         <td>
                             <a href="{{ route('admin.reservas.show', $reserva) }}" class="btn btn-sm btn-info">Ver</a>
-                            <a href="{{ route('admin.reservas.edit', $reserva) }}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{{ route('admin.reservas.edit', $reserva) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Editar</a>
                             <form action="{{ route('admin.reservas.destroy', $reserva) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta reserva?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+                                <button class="btn btn-sm btn-danger" type="submit"><i class="bi bi-trash"></i> Eliminar</button>
                             </form>
                         </td>
                     </tr>
