@@ -1,78 +1,54 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Cafetería</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      display: flex;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 250px;
-      background-color: #343a40;
-      color: white;
-    }
-    .sidebar a {
-      color: white;
-      padding: 10px;
-      display: block;
-      text-decoration: none;
-    }
-    .sidebar a:hover {
-      background-color: #495057;
-    }
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-    }
-  </style>
-</head>
-<body>
+<!-- filepath: f:\cafeteria2\resources\views\dashboard.blade.php -->
+@extends('layouts.admin')
 
-  <!-- Sidebar -->
-  <div class="sidebar d-flex flex-column p-3">
-    <h4 class="text-center">Cafetería</h4>
-    <a href="#">Dashboard</a>
-    <a href="#">Usuarios</a>
-    <a href="#">Turnos</a>
-    <a href="#">Mesas</a>
-    <a href="#">Pedidos</a>
-    <a href="#">Ítems de pedido</a>
-    <a href="#">Productos</a>
-    <a href="#">Inventario</a>
-    <a href="#">Categorías</a>
-    <a href="#">Proveedores</a>
-    <a href="#">Gastos</a>
-    <a href="#">Reservas</a>
-    <a href="#">Recetas</a>
-  </div>
-
-  <!-- Main Content -->
-  <div class="main-content">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-      <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1">Panel de Administración</span>
-      </div>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <div class="card text-bg-primary">
-            <div class="card-body">
-              <h5 class="card-title">Total de Productos</h5>
-              <p class="card-text fs-4">123</p>
+@section('content')
+<div class="container-fluid">
+    <!-- Panel superior de estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card shadow-sm border-0" style="background: #ff7043; color: #fff;">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Usuarios registrados</h6>
+                    <h3 class="card-text mb-0">58</h3>
+                    <small>Este mes</small>
+                </div>
             </div>
-          </div>
         </div>
-        <!-- Repite tarjetas para más métricas -->
-      </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card shadow-sm border-0" style="background: #e85d1f; color: #fff;">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Productos</h6>
+                    <h3 class="card-text mb-0">123</h3>
+                    <small>En inventario</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card shadow-sm border-0" style="background: #ffa270; color: #23272b;">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Ventas diarias</h6>
+                    <h3 class="card-text mb-0">$1,250</h3>
+                    <small>Hoy</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0" style="background: #fff3e0; color: #e85d1f;">
+                <div class="card-body">
+                    <h6 class="card-title mb-1">Ventas mensuales</h6>
+                    <h3 class="card-text mb-0">$32,000</h3>
+                    <small>Este mes</small>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+   <!-- Overview -->
+    <div class="card border-0 shadow-sm mb-4 overview-card">
+        <div class="card-body">
+            <h5 class="card-title" style="color: #e85d1f;">Overview</h5>
+            <p class="card-text">Estadísticas, visualización de datos y resumen general del sistema.</p>
+            <!-- Aquí puedes agregar gráficos o tablas en el futuro -->
+        </div>
+    </div>
+</div>
+@endsection

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles; // <-- Importa el trait
+
 
 class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasRoles; // <-- Usa el trait
 
     /**
      * Atributos que pueden ser asignados masivamente.

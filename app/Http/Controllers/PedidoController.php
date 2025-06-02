@@ -2,87 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use OpenApi\Annotations as OA;
 use App\Models\Pedido;
-use App\Http\Requests\StorePedidoRequest;
-use App\Http\Requests\UpdatePedidoRequest;
+use App\Models\Mesa;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
-/**
- * @OA\Tag(
- *     name="Pedidos",
- *     description="Operaciones relacionadas con los pedidos"
- * )
- */
-
-/**
- * @OA\Schema(
- *     schema="Pedido",
- *     type="object",
- *     required={"usuario_id", "mesa_id", "estado"},
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="usuario_id", type="integer", example=1),
- *     @OA\Property(property="mesa_id", type="integer", example=2),
- *     @OA\Property(property="estado", type="string", example="pendiente"),
- *     @OA\Property(property="notas", type="string", example="Sin cebolla"),
- *     @OA\Property(property="numero_pedido", type="string", example="PED12345"),
- *     @OA\Property(property="monto_total", type="number", format="float", example=150.75),
- *     @OA\Property(property="metodo_pago", type="string", example="tarjeta"),
- *     @OA\Property(property="estado_pago", type="string", example="pagado"),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time")
- * )
- */
 class PedidoController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/pedidos",
-     *     summary="Obtener lista de pedidos",
-     *     tags={"Pedidos"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista completa de pedidos",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Pedido"))
-     *     )
-     * )
-     */
+    // WEB: Listado en vista
     public function index()
     {
         $pedidos = Pedido::all();
-        return response()->json($pedidos, 200);
+        return view('admin.pedidos.index', compact('pedidos'));
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/pedidos",
-     *     summary="Crear un nuevo pedido",
-     *     tags={"Pedidos"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"usuario_id", "mesa_id", "estado"},
-     *             @OA\Property(property="usuario_id", type="integer", example=1),
-     *             @OA\Property(property="mesa_id", type="integer", example=2),
-     *             @OA\Property(property="estado", type="string", example="pendiente"),
-     *             @OA\Property(property="notas", type="string", example="Sin cebolla"),
-     *             @OA\Property(property="numero_pedido", type="string", example="PED12345"),
-     *             @OA\Property(property="monto_total", type="number", format="float", example=150.75),
-     *             @OA\Property(property="metodo_pago", type="string", example="tarjeta"),
-     *             @OA\Property(property="estado_pago", type="string", example="pendiente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Pedido creado exitosamente",
-     *         @OA\JsonContent(ref="#/components/schemas/Pedido")
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Datos inválidos"
-     *     )
-     * )
-     */
+    // WEB: Formulario de creación
+    public function create()
+    {
+        $mesas = Mesa::all();
+        $usuarios = Usuario::all();
+        return view('admin.pedidos.create', compact('mesas', 'usuarios'));
+    }
+
+    // WEB: Guardar nuevo pedido
     public function store(Request $request)
     {
         $request->validate([
@@ -90,125 +32,77 @@ class PedidoController extends Controller
             'mesa_id' => 'required|exists:mesas,id',
             'estado' => 'required|string|in:pendiente,preparando,completado,cancelado',
             'notas' => 'nullable|string|max:255',
-            'numero_pedido' => 'required|string|unique:pedidos,numero_pedido',
             'monto_total' => 'required|numeric|min:0',
             'metodo_pago' => 'nullable|string|in:efectivo,tarjeta,transferencia,otro',
             'estado_pago' => 'nullable|string|in:pendiente,pagado,cancelado',
         ]);
 
-        $pedido = Pedido::create($request->all());
+        // Generar número de pedido automáticamente
+        $ultimoPedido = Pedido::orderBy('id', 'desc')->first();
+        $numeroPedido = $ultimoPedido ? $ultimoPedido->id + 1 : 1;
 
-        return response()->json($pedido, 201);
+        Pedido::create([
+            'usuario_id' => $request->usuario_id,
+            'mesa_id' => $request->mesa_id,
+            'estado' => $request->estado,
+            'notas' => $request->notas,
+            'numero_pedido' => $numeroPedido,
+            'monto_total' => $request->monto_total,
+            'metodo_pago' => $request->metodo_pago,
+            'estado_pago' => $request->estado_pago,
+        ]);
+
+        return redirect()->route('admin.pedidos.index')
+            ->with('success', 'Pedido creado correctamente');
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/pedidos/{id}",
-     *     summary="Obtener un pedido por ID",
-     *     tags={"Pedidos"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del pedido",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Detalles del pedido",
-     *         @OA\JsonContent(ref="#/components/schemas/Pedido")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Pedido no encontrado"
-     *     )
-     * )
-     */
+    // WEB: Mostrar detalle
     public function show(Pedido $pedido)
     {
-        return response()->json($pedido, 200);
+        return view('admin.pedidos.show', compact('pedido'));
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/pedidos/{id}",
-     *     summary="Actualizar un pedido existente",
-     *     tags={"Pedidos"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del pedido",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="usuario_id", type="integer", example=1),
-     *             @OA\Property(property="mesa_id", type="integer", example=2),
-     *             @OA\Property(property="estado", type="string", example="preparando"),
-     *             @OA\Property(property="notas", type="string", example="Sin cebolla"),
-     *             @OA\Property(property="numero_pedido", type="string", example="PED12345"),
-     *             @OA\Property(property="monto_total", type="number", format="float", example=150.75),
-     *             @OA\Property(property="metodo_pago", type="string", example="tarjeta"),
-     *             @OA\Property(property="estado_pago", type="string", example="pendiente")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Pedido actualizado exitosamente",
-     *         @OA\JsonContent(ref="#/components/schemas/Pedido")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Pedido no encontrado"
-     *     )
-     * )
-     */
+    // WEB: Formulario de edición
+    public function edit(Pedido $pedido)
+    {
+        $mesas = Mesa::all();
+        $usuarios = Usuario::all();
+        return view('admin.pedidos.edit', compact('pedido', 'mesas', 'usuarios'));
+    }
+
+    // WEB: Actualizar pedido
     public function update(Request $request, Pedido $pedido)
     {
         $request->validate([
             'usuario_id' => 'required|exists:usuarios,id',
             'mesa_id' => 'required|exists:mesas,id',
-            'estado' => 'required|string|in:pendiente,preparando,completado,cancelado',
+            'estado' => 'required|string|in:pendiente,completado,cancelado',
             'notas' => 'nullable|string|max:255',
-            'numero_pedido' => 'required|string|unique:pedidos,numero_pedido,' . $pedido->id,
             'monto_total' => 'required|numeric|min:0',
             'metodo_pago' => 'nullable|string|in:efectivo,tarjeta,transferencia,otro',
             'estado_pago' => 'nullable|string|in:pendiente,pagado,cancelado',
         ]);
 
-        $pedido->update($request->all());
+        $pedido->update([
+            'usuario_id' => $request->usuario_id,
+            'mesa_id' => $request->mesa_id,
+            'estado' => $request->estado,
+            'notas' => $request->notas,
+            'monto_total' => $request->monto_total,
+            'metodo_pago' => $request->metodo_pago,
+            'estado_pago' => $request->estado_pago,
+        ]);
 
-        return response()->json($pedido, 200);
+        return redirect()->route('admin.pedidos.index')
+            ->with('success', 'Pedido actualizado correctamente');
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/pedidos/{id}",
-     *     summary="Eliminar un pedido",
-     *     tags={"Pedidos"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="ID del pedido",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="Pedido eliminado exitosamente"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Pedido no encontrado"
-     *     )
-     * )
-     */
+    // WEB: Eliminar pedido
     public function destroy(Pedido $pedido)
     {
         $pedido->delete();
 
-        return response()->json(['message' => 'Pedido eliminado correctamente'], 204);
+        return redirect()->route('admin.pedidos.index')
+            ->with('success', 'Pedido eliminado correctamente');
     }
 }
