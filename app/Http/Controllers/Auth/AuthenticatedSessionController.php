@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\Usuario; // <-- Usa tu modelo Usuario
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,7 +25,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Autenticación usando el modelo Usuario y la tabla usuarios
+        $credentials = $request->only('correo', 'password');
+        $loginField = filter_var($credentials['correo'], FILTER_VALIDATE_EMAIL) ? 'correo' : 'nombre';
+        $attempt = Auth::guard('web')->attempt([
+            $loginField => $credentials['correo'],
+            'password' => $credentials['password'],
+        ], $request->filled('remember'));
+
+        if (!$attempt) {
+            return back()->withErrors([
+                'correo' => 'Las credenciales no coinciden con nuestros registros.',
+            ]);
+        }
 
         $request->session()->regenerate();
 

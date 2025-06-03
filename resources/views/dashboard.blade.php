@@ -3,6 +3,12 @@
 @can('ver dashboard')
 @section('content')
 <div class="container-fluid">
+    <!-- Botón para descargar PDF -->
+    <div class="mb-4 text-end">
+        <a href="{{ route('dashboard.pdf') }}" class="btn btn-outline-danger" target="_blank">
+            <i class="fas fa-file-pdf"></i> Descargar reporte PDF
+        </a>
+    </div>
     <!-- Panel superior de estadísticas -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3 mb-md-0">

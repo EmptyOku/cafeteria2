@@ -13,14 +13,9 @@
             </p>
             <hr>
             <div class="row mt-4">
-                <div class="col-6 mb-3">
+                <div class="col-12 mb-3">
                     <a href="{{ url('/empleado/mesas') }}" class="btn btn-naranja w-100">
                         <i class="fas fa-chair"></i><br>Ver Mesas
-                    </a>
-                </div>
-                <div class="col-6 mb-3">
-                    <a href="{{ url('/empleado/pedidos') }}" class="btn btn-outline-primary w-100">
-                        <i class="fas fa-receipt"></i><br>Items Pedidos
                     </a>
                 </div>
                 <div class="col-12 d-flex gap-2">

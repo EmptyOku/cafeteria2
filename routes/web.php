@@ -20,6 +20,7 @@ use App\Http\Controllers\PedidoClienteController;
 use App\Http\Controllers\ReservarMesaController;
 use App\Http\Controllers\RegistrarTurnoController;
 use App\Http\Controllers\VerMesaController;
+use App\Http\Controllers\RegistroClienteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,7 @@ Route::get('/', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 */
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/pdf', [DashboardController::class, 'pdf'])->name('dashboard.pdf');
 Route::get('/cliente/menu', [MenuClienteController::class, 'index'])->name('cliente.menu');
 Route::get('/cliente/pedidos', [PedidoClienteController::class, 'index'])->name('cliente.pedidos');
 Route::get('/cliente/reservas', [ReservarMesaController::class, 'index'])->name('cliente.reservas.index');
@@ -47,6 +49,10 @@ Route::get('/cliente/info', function () {
 Route::get('/empleado/home', function () {
     return view('empleado/home');
 })->middleware(['auth', 'verified'])->name('empleado/home');
+
+Route::get('welcome', function () {
+    return view('welcome');
+})->middleware(['auth', 'verified'])->name('welcome');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -71,11 +77,13 @@ Route::middleware(['auth'])
          Route::resource('recetas', RecetaController::class);
          Route::resource('item_pedidos', ItemPedidoController::class);
          Route::resource('gastos', GastoController::class);
+
          // … otras tablas
 
      });
 
 Route::post('/empleado/turnos/entrada', [RegistrarTurnoController::class, 'marcarEntrada'])->name('empleado.turnos.entrada');
 Route::post('/empleado/turnos/salida', [RegistrarTurnoController::class, 'marcarSalida'])->name('empleado.turnos.salida');
+Route::post('register', [RegistroClienteController::class, 'create'])->name('register');
 
 require __DIR__.'/auth.php';

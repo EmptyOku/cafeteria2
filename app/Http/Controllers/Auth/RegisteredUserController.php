@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Usuario; // Usa tu modelo Usuario
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,19 +31,25 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:usuarios,correo'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $usuario = Usuario::create([
+            'nombre' => $request->name,
+            'correo' => $request->email,
+            'contrasena' => Hash::make($request->password),
+            'rol' => 'cliente', // Asigna el rol cliente por defecto
         ]);
 
-        event(new Registered($user));
+        // Si usas Spatie, asigna el rol
+        if (method_exists($usuario, 'assignRole')) {
+            $usuario->assignRole('cliente');
+        }
 
-        Auth::login($user);
+        event(new Registered($usuario));
+
+        Auth::login($usuario);
 
         return redirect(route('dashboard', absolute: false));
     }
