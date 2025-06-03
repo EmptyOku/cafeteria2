@@ -15,6 +15,11 @@ use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ItemPedidoController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MenuClienteController;
+use App\Http\Controllers\PedidoClienteController;
+use App\Http\Controllers\ReservarMesaController;
+use App\Http\Controllers\RegistrarTurnoController;
+use App\Http\Controllers\VerMesaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,6 +29,24 @@ Route::get('/', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 */
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/cliente/menu', [MenuClienteController::class, 'index'])->name('cliente.menu');
+Route::get('/cliente/pedidos', [PedidoClienteController::class, 'index'])->name('cliente.pedidos');
+Route::get('/cliente/reservas', [ReservarMesaController::class, 'index'])->name('cliente.reservas.index');
+Route::post('/cliente/reservas', [ReservarMesaController::class, 'store'])->name('cliente.reservas.store');
+Route::get('/cliente/reservas/mis-reservas', [ReservarMesaController::class, 'show'])->name('cliente.reservas.show');
+Route::get('/empleado/mesas', [VerMesaController::class, 'index'])->name('mesas.estado');
+
+
+Route::get('/cliente/home', function () {
+    return view('cliente/home');
+})->middleware(['auth', 'verified'])->name('cliente/home');
+Route::get('/cliente/info', function () {
+    return view('cliente/info');
+})->middleware(['auth', 'verified'])->name('cliente/info');
+
+Route::get('/empleado/home', function () {
+    return view('empleado/home');
+})->middleware(['auth', 'verified'])->name('empleado/home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -49,6 +72,10 @@ Route::middleware(['auth'])
          Route::resource('item_pedidos', ItemPedidoController::class);
          Route::resource('gastos', GastoController::class);
          // … otras tablas
+
      });
+
+Route::post('/empleado/turnos/entrada', [RegistrarTurnoController::class, 'marcarEntrada'])->name('empleado.turnos.entrada');
+Route::post('/empleado/turnos/salida', [RegistrarTurnoController::class, 'marcarSalida'])->name('empleado.turnos.salida');
 
 require __DIR__.'/auth.php';

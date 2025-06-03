@@ -41,6 +41,9 @@ return new class extends Migration
         Schema::table('gastos', function (Blueprint $table) {
             $table->softDeletes();
         });
+        Schema::table('turnos', function (Blueprint $table) {
+            $table->softDeletes();
+        });
 
         // Repite para cada tabla que desees
     }
@@ -78,6 +81,9 @@ return new class extends Migration
             $table->dropSoftDeletes();
         });
          Schema::table('gastos', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
+        Schema::table('turnos', function (Blueprint $table) {
             $table->dropSoftDeletes();
         });
         // Repite para cada tabla que desees

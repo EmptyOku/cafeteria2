@@ -1,6 +1,6 @@
 {{-- filepath: f:\cafeteria2\resources\views\dashboard.blade.php --}}
 @extends('layouts.admin')
-
+@can('ver dashboard')
 @section('content')
 <div class="container-fluid">
     <!-- Panel superior de estadísticas -->
@@ -128,3 +128,4 @@
     });
 </script>
 @endpush
+@endcan
