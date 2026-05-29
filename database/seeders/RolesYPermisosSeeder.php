@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Usuario;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\Usuario;
 
 class RolesYPermisosSeeder extends Seeder
 {
@@ -47,19 +48,39 @@ class RolesYPermisosSeeder extends Seeder
         $mesero->syncPermissions([]);
         $cliente->syncPermissions([]);
 
-        // Asignar rol a usuarios de prueba
-        $usuarios_roles = [
-            1 => 'administrador',
-            38 => 'administrador',
-            36 => 'empleado',
-            39 => 'cliente',
+        // Crear usuarios de prueba consistentes y asignarles roles
+        $usuarios = [
+            [
+                'nombre' => 'Administrador Demo',
+                'correo' => 'admin@example.com',
+                'contrasena' => 'password',
+                'rol' => 'administrador',
+            ],
+            [
+                'nombre' => 'Empleado Demo',
+                'correo' => 'empleado@example.com',
+                'contrasena' => 'password',
+                'rol' => 'empleado',
+            ],
+            [
+                'nombre' => 'Cliente Demo',
+                'correo' => 'cliente@example.com',
+                'contrasena' => 'password',
+                'rol' => 'cliente',
+            ],
         ];
 
-        foreach ($usuarios_roles as $id => $rol) {
-            $usuario = Usuario::find($id);
-            if ($usuario) {
-                $usuario->assignRole($rol);
-            }
+        foreach ($usuarios as $datos) {
+            $usuario = Usuario::updateOrCreate(
+                ['correo' => $datos['correo']],
+                [
+                    'nombre' => $datos['nombre'],
+                    'contrasena' => Hash::make($datos['contrasena']),
+                    'rol' => $datos['rol'],
+                ]
+            );
+
+            $usuario->syncRoles([$datos['rol']]);
         }
     }
 }
